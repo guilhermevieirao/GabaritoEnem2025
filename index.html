@@ -1,287 +1,414 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Correção de Prova</title>
-
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #111;
-            color: white;
-            font-family: Arial;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
-
-        #container {
-            display: flex;
-            flex-direction: row;
-            width: 95%;
-            max-width: 900px;
-            gap: 20px;
-            position: relative;
-            z-index: 2;
-        }
-
-        #tela {
-            flex: 2;
-            border: 2px solid white;
-            padding: 20px;
-            border-radius: 15px;
-            background: #222;
-            text-align: center;
-        }
-
-        #painelInfo {
-            flex: 1;
-            border: 2px solid white;
-            padding: 20px;
-            border-radius: 15px;
-            background: #333;
-            font-size: 18px;
-        }
-
-        .alternativas {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .alternativaBtn {
-            width: 18%;
-            padding: 18px;
-            background: #444;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .alternativaBtn:active {
-            transform: scale(0.92);
-        }
-
-        /* TELA PISCANDO */
-        .flash-acerto {
-            animation: flashGreen 1s;
-        }
-        .flash-erro {
-            animation: flashRed 1s;
-        }
-
-        @keyframes flashGreen {
-            0% { background: #0f0; }
-            100% { background: #111; }
-        }
-
-        @keyframes flashRed {
-            0% { background: #f00; }
-            100% { background: #111; }
-        }
-
-        #voltar {
-            margin-top: 20px;
-            padding: 10px;
-            font-size: 18px;
-            background: #880000;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        @media(max-width: 700px) {
-            #container {
-                flex-direction: column;
-                height: 95vh;
-            }
-        }
-    </style>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+    <!-- OVERLAY PARA EFEITO FLASH -->
+    <div id="flashOverlay" class="flash-overlay"></div>
 
-<div id="container">
-    <div id="tela">
-        <h2>Escolha a cor da prova:</h2>
-        <button onclick="selecionaProva('verde')">Verde</button>
-        <button onclick="selecionaProva('branca')">Branca</button>
-        <button onclick="selecionaProva('azul')">Azul</button>
-        <button onclick="selecionaProva('amarela')">Amarela</button>
+    <!-- EASTER EGG OVERLAY -->
+    <div id="easterEggOverlay" class="easter-egg-overlay">
+        <img src="easteregg.jpg" alt="Easter Egg" class="easter-egg-image">
     </div>
 
-    <div id="painelInfo">
-        <h3>Última Questão</h3>
-        <p id="infoQuestao">Ainda não respondeu nenhuma</p>
+    <!-- EASTER EGG - ÍCONE NO CANTO DA TELA -->
+    <div id="easterEggIcon" class="easter-egg-icon-fixed" onclick="mostrarEasterEgg()">
+        <i class="bi bi-person-arms-up"></i>
     </div>
-</div>
 
-<!-- SONS -->
-<audio id="somAcerto" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
-<audio id="somErro" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
-
-<script>
-let gabaritos = {
-    verde: {
-        ingles: ["D","D","A","D","E"],
-        espanhol: ["B","D","A","D","C"],
-        resto: [
-            "E","D","C","C","E","B","E","B","C","E",
-            "C","A","E","B","C","E","D","B","A","B",
-            "C","A","E","D","C","E","D","B","A","B",
-            "A","B","D","E","B","B","C","B","A","A",
-            "B","D","D","C","C","A","C","E","E","D",
-            "C","A","D","B","D","E","C","A","D","E",
-            "D","E","C","A","B","A","C","B","A","D",
-            "A","B","B","C","B","C","E","A","E","E",
-            "D","D","B","C","D","D","E","C","B","B","A"
-        ]
-    },
-    branca: {
-        ingles: ["E","A","D","D","D"],
-        espanhol: ["D","C","B","A","D"],
-        resto: [
-            "C","E","E","D","C","A","E","B","C","A",
-            "E","D","B","C","E","C","B","E","B","C",
-            "B","A","B","A","C","E","D","B","D","E",
-            "B","C","A","B","A","D","D","C","A","B",
-            "A","D","B","D","E","E","D","E","C","E",
-            "E","D","C","C","A","D","B","A","D","A",
-            "B","B","C","A","B","A","C","B","B","A",
-            "C","D","D","E","C","C","B","C","E","A",
-            "E","E","D","D","B"
-        ]
-    },
-    azul: {
-        ingles: ["D","D","D","E","A"],
-        espanhol: ["B","A","D","D","C"],
-        resto: [
-            "E","C","D","C","E","B","C","E","C","A",
-            "E","D","A","E","B","C","B","C","B","E",
-            "B","A","B","A","B","D","E","B","C","E",
-            "D","A","B","C","A","B","A","D","D","C",
-            "E","D","E","C","A","D","C","E","E","D",
-            "C","A","D","B","D","E","B","B","A","C",
-            "D","D","E","C","B","A","D","A","B","B",
-            "C","A","B","A","C","E","E","D","D","B",
-            "C","B","C","E","A"
-        ]
-    },
-    amarela: {
-        ingles: ["A","E","D","D","D"],
-        espanhol: ["D","B","A","C","D"],
-        resto: [
-            "C","E","C","E","D","A","E","D","A","E",
-            "B","C","B","E","B","C","E","C","B","D",
-            "E","B","C","E","D","B","A","B","A","B",
-            "C","D","D","C","C","A","A","B","B","A",
-            "C","A","D","E","D","E","A","D","B","D",
-            "E","C","E","E","D","C","C","D","D","E",
-            "C","C","B","C","E","A","B","B","A","C",
-            "A","B","A","C","E","E","D","D","B","B",
-            "A","D","A","B","B"
-        ]
-    }
-};
-
-let provaSelecionada = null;
-let gabaritoFinal = [];
-let respostasUsuario = [];
-let questao = 1;
-
-function selecionaProva(cor) {
-    provaSelecionada = cor;
-    document.getElementById("tela").innerHTML = `
-        <h2>Usar Inglês ou Espanhol nas 5 primeiras?</h2>
-        <button onclick="definirIdioma('ingles')">Inglês</button>
-        <button onclick="definirIdioma('espanhol')">Espanhol</button>
-    `;
-}
-
-function definirIdioma(idioma) {
-    let dados = gabaritos[provaSelecionada];
-    gabaritoFinal = [...dados[idioma], ...dados.resto];
-    iniciarResposta();
-}
-
-function iniciarResposta() {
-    document.getElementById("tela").innerHTML = `
-        <h2>Questão <span id="qNum">1</span> de ${gabaritoFinal.length}</h2>
-        <p>Clique na tela ou digite A, B, C, D, E</p>
-
-        <div class="alternativas">
-            <button class="alternativaBtn" onclick="responder('A')">A</button>
-            <button class="alternativaBtn" onclick="responder('B')">B</button>
-            <button class="alternativaBtn" onclick="responder('C')">C</button>
-            <button class="alternativaBtn" onclick="responder('D')">D</button>
-            <button class="alternativaBtn" onclick="responder('E')">E</button>
+    <!-- SWITCHES DE CONFIGURAÇÃO -->
+    <div class="switch-container">
+        <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-volume-up-fill"></i>
+                <label class="custom-switch">
+                    <input type="checkbox" id="switchAudio" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <i class="bi bi-palette-fill"></i>
+                <label class="custom-switch">
+                    <input type="checkbox" id="switchEfeitos" checked>
+                    <span class="switch-slider"></span>
+                </label>
+            </div>
         </div>
+    </div>
 
-        <button id="voltar" onclick="voltarQuestao()">Voltar</button>
-    `;
-}
+    <!-- CONTAINER PRINCIPAL -->
+    <div class="main-container">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <!-- TELA PRINCIPAL -->
+                <div class="col-lg-8 col-xl-7">
+                    <div class="card custom-card p-4 text-center fade-in">
+                        <!-- TELA 1: SELEÇÃO DE ANO -->
+                        <div id="telaAno" class="tela-secao">
+                            <h2 class="mb-4">
+                                <i class="bi bi-calendar-range me-2"></i>
+                                Sistema de Correção de Provas ENEM
+                            </h2>
+                            <div class="row g-3 justify-content-center mb-4">
+                                <div class="col-md-5">
+                                    <button class="btn btn-sucesso btn-custom w-100 py-4" onclick="selecionarAno(2025)">
+                                        <div class="mb-2">
+                                            <i class="bi bi-calendar-check-fill fs-1"></i>
+                                        </div>
+                                        <h4 class="mb-1">ENEM 2025</h4>
+                                        <small>Gabaritos Oficiais Disponíveis</small>
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <button class="btn btn-custom w-100 py-4" onclick="selecionarAno('anteriores')" 
+                                            style="background: #555 !important; border-color: #555 !important; opacity: 0.7;">
+                                        <div class="mb-2">
+                                            <i class="bi bi-archive-fill fs-1"></i>
+                                        </div>
+                                        <h4 class="mb-1">Edições Anteriores</h4>
+                                        <small>2024, 2023, 2022...</small>
+                                        <div class="mt-2">
+                                            <small style="color: #ff4444 !important; font-weight: bold;">
+                                                <i class="bi bi-hourglass-split me-1"></i>
+                                                Em Breve
+                                            </small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="my-4" style="border-color: #666;">
+                            <div class="row justify-content-center">
+                                <div class="col-md-5">
+                                    <button class="btn btn-idioma btn-custom w-100 py-3" onclick="iniciarProvaPersonalizada()">
+                                        <i class="bi bi-gear-fill me-2"></i>Prova Personalizada
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <button class="btn btn-sucesso btn-custom w-100 py-3" onclick="abrirProvasSalvas()">
+                                        <i class="bi bi-folder-fill me-2"></i>Provas Salvas
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
 
-document.addEventListener("keydown", e => {
-    let letra = e.key.toUpperCase();
-    if (["A","B","C","D","E"].includes(letra)) responder(letra);
-});
+                        <!-- TELA 2: SELEÇÃO DE DIA -->
+                        <div id="telaDia" class="tela-secao hidden">
+                            <h2 class="mb-4">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Escolha o dia da prova do ENEM 2025
+                            </h2>
+                            <div class="row g-3 justify-content-center mb-4">
+                                <div class="col-md-5">
+                                    <button class="btn btn-sucesso btn-custom w-100 py-4" onclick="selecionarDia(1)">
+                                        <div class="mb-2">
+                                            <i class="bi bi-1-circle-fill fs-1"></i>
+                                        </div>
+                                        <h5 class="mb-1">Primeiro Dia</h5>
+                                        <small>Linguagens e Ciências Humanas</small>
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <button class="btn btn-custom w-100 py-4" onclick="selecionarDia(2)" 
+                                            style="background: #555 !important; border-color: #555 !important; opacity: 0.7;">
+                                        <div class="mb-2">
+                                            <i class="bi bi-2-circle-fill fs-1"></i>
+                                        </div>
+                                        <h5 class="mb-1">Segundo Dia</h5>
+                                        <small>Matemática e Ciências da Natureza</small>
+                                        <div class="mt-2">
+                                            <small style="color: #ff4444 !important; font-weight: bold;">
+                                                <i class="bi bi-lock-fill me-1"></i>
+                                                Disponível em 16/11
+                                            </small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button onclick="voltarAno()" class="btn btn-voltar btn-custom px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                                </button>
+                            </div>
+                        </div>
 
-function responder(letra) {
-    respostasUsuario.push(letra);
+                        <!-- TELA 3: SELEÇÃO DE COR -->
+                        <div id="telaCor" class="tela-secao hidden">
+                            <h2 class="mb-4">
+                                <i class="bi bi-palette2 me-2"></i>
+                                Escolha a cor da prova
+                            </h2>
+                            <div id="mensagemSegundoDia" class="alert alert-danger mb-4 d-none">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Segundo Dia - Disponível somente em 16/11</strong>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <button id="btnVerde" class="btn btn-verde btn-custom w-100 py-3" onclick="selecionaProva('verde')">
+                                        Verde
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button id="btnBranca" class="btn btn-branca btn-custom w-100 py-3" onclick="selecionaProva('branca')">
+                                        Branca
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button id="btnAzul" class="btn btn-azul btn-custom w-100 py-3" onclick="selecionaProva('azul')">
+                                        Azul
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button id="btnAmarela" class="btn btn-amarela btn-custom w-100 py-3" onclick="selecionaProva('amarela')">
+                                        Amarela
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center mt-3">
+                                <button onclick="voltarDia()" class="btn btn-voltar btn-custom px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                                </button>
+                            </div>
+                        </div>
 
-    let correta = gabaritoFinal[respostasUsuario.length - 1];
-    let ultima = respostasUsuario.length;
+                        <!-- TELA 4: SELEÇÃO DE IDIOMA -->
+                        <div id="telaIdioma" class="tela-secao hidden">
+                            <h2 class="mb-4">
+                                <i class="bi bi-translate me-2"></i>
+                                Escolha o idioma das 5 primeiras questões
+                            </h2>
+                            <div class="row g-3 justify-content-center mb-4">
+                                <div class="col-md-4">
+                                    <button class="btn btn-idioma btn-custom w-100 py-3" onclick="definirIdioma('ingles')">
+                                        🇺🇸 Inglês
+                                    </button>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-idioma btn-custom w-100 py-3" onclick="definirIdioma('espanhol')">
+                                        🇪🇸 Espanhol
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button onclick="voltarCor()" class="btn btn-voltar btn-custom px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                                </button>
+                            </div>
+                        </div>
 
-    atualizarPainel(ultima, correta, letra);
+                        <!-- TELA 5: QUESTÕES -->
+                        <div id="telaQuestoes" class="tela-secao hidden">
+                            <h2 class="mb-3">
+                                <i class="bi bi-question-circle-fill me-2"></i>
+                                Questão <span id="qNum" class="text-info">1</span> de <span id="totalQuestoes" class="text-info">90</span>
+                            </h2>
+                            <p class="mb-4" style="color: #ccc !important;">
+                                <i class="bi bi-mouse me-1"></i>Clique nos botões ou use as teclas A, B, C, D, E
+                            </p>
+                            <div class="row g-2 mb-4">
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="responder('A')">A</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="responder('B')">B</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="responder('C')">C</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="responder('D')">D</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="responder('E')">E</button>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <button class="btn btn-inicio btn-custom px-4" onclick="voltarInicio()">
+                                    <i class="bi bi-house-fill me-2"></i>Início
+                                </button>
+                                <button class="btn btn-voltar btn-custom px-4" onclick="voltarQuestao()">
+                                    <i class="bi bi-arrow-left me-2"></i>Voltar Questão
+                                </button>
+                            </div>
+                        </div>
 
-    // som
-    document.getElementById(letra === correta ? "somAcerto" : "somErro").play();
+                        <!-- TELA 6: RESULTADO -->
+                        <div id="telaResultado" class="tela-secao hidden">
+                            <h2 class="mb-3">
+                                <i class="bi bi-trophy-fill me-2"></i>
+                                Resultado Final
+                            </h2>
+                            <p class="fs-5 mb-4" style="color: white !important;">
+                                Acertos: <span id="numAcertos" class="text-success fw-bold">0</span> 
+                                de <span id="totalFinal" class="fw-bold" style="color: white !important;">90</span>
+                            </p>
+                            <div class="table-responsive mb-4" style="max-height: 50vh;">
+                                <table id="tabela" class="table table-sm"></table>
+                            </div>
+                            <div class="d-flex gap-3 justify-content-center">
+                                <button onclick="voltarInicio()" class="btn btn-inicio btn-custom px-4">
+                                    <i class="bi bi-house-fill me-2"></i>Início
+                                </button>
+                                <button onclick="location.reload()" class="btn btn-sucesso btn-custom px-4">
+                                    <i class="bi bi-arrow-clockwise me-2"></i>Recomeçar
+                                </button>
+                            </div>
+                        </div>
 
-    // flash tela inteira
-    document.body.classList.add(letra === correta ? "flash-acerto" : "flash-erro");
-    setTimeout(() => document.body.classList.remove("flash-acerto", "flash-erro"), 1000);
+                        <!-- TELA 7: CONFIGURAR PROVA PERSONALIZADA -->
+                        <div id="telaPersonalizadaConfig" class="tela-secao hidden">
+                            <h2 class="mb-4">
+                                <i class="bi bi-gear-fill me-2"></i>
+                                Configurar Prova Personalizada
+                            </h2>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="mb-4">
+                                        <label class="form-label" style="color: white !important;">Método de criação:</label>
+                                        <div class="mb-3">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="radio" name="metodoGabarito" id="metodoManual" value="manual" checked>
+                                                <label class="form-check-label" for="metodoManual" style="color: white !important;">
+                                                    Manual (questão por questão)
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="metodoGabarito" id="metodoTexto" value="texto">
+                                                <label class="form-check-label" for="metodoTexto" style="color: white !important;">
+                                                    Inserir como texto (ex: ABCDEABCDE...)
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- MÉTODO MANUAL -->
+                                    <div id="configManual" class="mb-4">
+                                        <label class="form-label" style="color: white !important;">Número de questões:</label>
+                                        <input type="number" id="numQuestoesPersonalizada" class="form-control" 
+                                               min="1" max="200" value="20" 
+                                               style="background: var(--bg-tertiary); color: white; border: 1px solid var(--border-color);">
+                                    </div>
+                                    
+                                    <!-- MÉTODO TEXTO -->
+                                    <div id="configTexto" class="mb-4 d-none">
+                                        <label class="form-label" style="color: white !important;">Gabarito (apenas letras A, B, C, D, E):</label>
+                                        <textarea id="gabaritoTexto" class="form-control" rows="4" 
+                                                  placeholder="Digite o gabarito, ex: ABCDEABCDEA ou abcde abcde a..."
+                                                  style="background: var(--bg-tertiary); color: white; border: 1px solid var(--border-color); font-family: monospace;"></textarea>
+                                        <small class="text-muted">Espaços e quebras de linha serão ignorados. Apenas letras A-E são aceitas.</small>
+                                    </div>
+                                    
+                                    <div class="d-flex gap-2 justify-content-center">
+                                        <button onclick="voltarInicio()" class="btn btn-voltar btn-custom px-4">
+                                            <i class="bi bi-arrow-left me-2"></i>Voltar
+                                        </button>
+                                        <button onclick="processarProvaPersonalizada()" class="btn btn-sucesso btn-custom px-4">
+                                            <i class="bi bi-check-circle me-2"></i>Continuar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-    if (ultima === gabaritoFinal.length) {
-        finalizar();
-    } else {
-        questao++;
-        document.getElementById("qNum").innerText = questao;
-    }
-}
+                        <!-- TELA 8: DEFINIR GABARITO PERSONALIZADO -->
+                        <div id="telaDefinirGabarito" class="tela-secao hidden">
+                            <h2 class="mb-3">
+                                <i class="bi bi-pencil-fill me-2"></i>
+                                Definir Gabarito - Questão <span id="questaoGabarito">1</span> de <span id="totalGabarito">20</span>
+                            </h2>
+                            <p class="mb-4" style="color: #ccc !important;">
+                                Escolha a resposta correta para esta questão:
+                            </p>
+                            <p class="mb-3" style="color: #888 !important; font-size: 0.9rem;">
+                                💡 Dica: Use as teclas A, B, C, D, E ou clique nos botões
+                            </p>
+                            <div class="row g-2 mb-4">
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="definirResposta('A')">A</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="definirResposta('B')">B</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="definirResposta('C')">C</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="definirResposta('D')">D</button>
+                                </div>
+                                <div class="col">
+                                    <button class="btn btn-alternativa btn-custom w-100" onclick="definirResposta('E')">E</button>
+                                </div>
+                            </div>
+                            <div class="d-flex gap-2 justify-content-center">
+                                <button onclick="voltarGabarito()" class="btn btn-voltar btn-custom px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Voltar
+                                </button>
+                                <button onclick="voltarInicio()" class="btn btn-inicio btn-custom px-4">
+                                    <i class="bi bi-house-fill me-2"></i>Início
+                                </button>
+                            </div>
+                        </div>
 
-function atualizarPainel(numero, correta, marcada) {
-    document.getElementById("infoQuestao").innerHTML = `
-        Questão: <strong>${numero}</strong><br>
-        Correta: <strong>${correta || "-"}</strong><br>
-        Você marcou: <strong>${marcada}</strong>
-    `;
-}
+                        <!-- TELA 9: PROVAS SALVAS -->
+                        <div id="telaProvasSalvas" class="tela-secao hidden">
+                            <h2 class="mb-4">
+                                <i class="bi bi-folder-fill me-2"></i>
+                                Provas Salvas
+                            </h2>
+                            <div class="row justify-content-center">
+                                <div class="col-md-8">
+                                    <div id="listaProvasSalvas" class="mb-4">
+                                        <!-- Lista será preenchida dinamicamente -->
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <button onclick="voltarInicio()" class="btn btn-voltar btn-custom px-4">
+                                                <i class="bi bi-arrow-left me-2"></i>Voltar ao Início
+                                            </button>
+                                            <button onclick="limparTodasProvas()" class="btn btn-erro btn-custom px-4">
+                                                <i class="bi bi-trash3-fill me-2"></i>Limpar Todas
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-function voltarQuestao() {
-    if (respostasUsuario.length > 0) {
-        respostasUsuario.pop();
-        questao--;
-        document.getElementById("qNum").innerText = questao;
-        atualizarPainel("—", "-", "-");
-    }
-}
+                <!-- PAINEL LATERAL DE INFORMAÇÕES -->
+                <div class="col-lg-4 col-xl-3 d-none" id="painelContainer">
+                    <div id="painelInfo" class="card custom-card info-panel p-3">
+                        <h5 class="mb-3">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Última Questão
+                        </h5>
+                        <div id="infoQuestao" style="color: white !important;">
+                            Ainda não respondeu nenhuma
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-function finalizar() {
-    let acertos = respostasUsuario.filter((r, i) => r === gabaritoFinal[i]).length;
+    <!-- SONS -->
+    <audio id="somAcerto" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
+    <audio id="somErro" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
-    document.getElementById("tela").innerHTML = `
-        <h2>Resultado Final</h2>
-        <p>Acertos: <strong>${acertos}</strong> de <strong>${gabaritoFinal.length}</strong></p>
-        <button onclick="location.reload()">Recomeçar</button>
-    `;
-}
-</script>
+    <script src="script.js"></script>
 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
