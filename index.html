@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Correção de Prova</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #tela {
+            width: 100%;
+            max-width: 500px;
+            border: 2px solid white;
+            padding: 20px;
+            border-radius: 15px;
+            background: #222;
+        }
+
+        .alternativas {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .alternativaBtn {
+            width: 18%;
+            padding: 15px;
+            background: #444;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .alternativaBtn:active {
+            background: #666;
+        }
+
+        #voltar {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 18px;
+            background: #880000;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        @media(max-width: 600px) {
+            .alternativaBtn {
+                font-size: 18px;
+                padding: 12px;
+            }
+        }
+
+        .flash-acerto {
+            animation: flashGreen 0.6s;
+        }
+        .flash-erro {
+            animation: flashRed 0.6s;
+        }
+
+        @keyframes flashGreen {
+            0% { background: #0f0; }
+            100% { background: #111; }
+        }
+
+        @keyframes flashRed {
+            0% { background: #f00; }
+            100% { background: #111; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="tela">
+    <h2>Escolha a cor da prova:</h2>
+    <button onclick="selecionaProva('verde')">Verde</button>
+    <button onclick="selecionaProva('branca')">Branca</button>
+    <button onclick="selecionaProva('azul')">Azul</button>
+    <button onclick="selecionaProva('amarela')">Amarela</button>
+</div>
+
+<audio id="somAcerto">
+    <source src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg">
+</audio>
+
+<audio id="somErro">
+    <source src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg">
+</audio>
+
+<script>
+let gabaritos = {
+    verde: {
+        ingles: ["D","D","A","D","E"],
+        espanhol: ["B","D","A","D","C"],
+        resto: ["E","D","C","C","E","B","E","B","C","E","C","A","E","D","B","C","A","E","D","B","E","D","B","A","B","A","B","D","E","E","B","B","C","B","A","A","B","D","D","C","C","A","C","E","E","D","C","A","D","B","C","A","B","A","C","B","B","A","D","D","E","C","C","A","D","B","A","B","C"]
+    },
+    branca: {
+        ingles: ["E","A","D","D","D"],
+        espanhol: ["D","C","B","A","D"],
+        resto: ["C","E","E","D","C","A","E","B","C","A","E","D","B","C","E","C","B","E","B","C","B","A","B","A","C","E","D","B","D","E","B","C","A","B","A","D","D","C","A","B","A","D","B","D","E","E","D","E","C","E","E","D","C","C","A","D","B","A","D","A","B","B","C","A","D","D","E","C","E","A","B","B","D"]
+    },
+    azul: {
+        ingles: ["D","D","D","E","A"],
+        espanhol: ["B","A","D","D","C"],
+        resto: ["E","C","D","C","E","B","C","E","C","A","E","D","A","E","B","C","B","C","B","E","B","A","B","A","B","D","E","B","C","E","D","A","B","C","A","B","A","D","D","C","E","D","E","C","A","D","C","E","E","D","C","A","E","B","B","A","C","D","D","E","C","A","B","A","D","A","B","A","C","E","E","D","D","B","C","E","A"]
+    },
+    amarela: {
+        ingles: ["A","E","D","D","D"],
+        espanhol: ["D","B","A","C","D"],
+        resto: ["C","E","C","E","D","A","E","D","A","E","B","C","B","E","B","D","E","B","C","D","E","C","B","D","E","B","C","E","D","B","A","B","A","B","C","D","D","C","C","A","A","B","B","A","C","A","D","E","D","E","A","D","B","D","E","C","E","E","D","C","C","D","D","E","C","C","B","C","E","A","B","B","A","C","E","E","D","B","B","A","D","A","B","B"]
+    }
+};
+
+let provaSelecionada = null;
+let gabaritoFinal = [];
+let respostasUsuario = [];
+let questao = 1;
+
+function selecionaProva(cor) {
+    provaSelecionada = cor;
+    document.getElementById("tela").innerHTML = `
+        <h2>Usar bloco de Inglês ou Espanhol primeiro?</h2>
+        <button onclick="definirIdioma('ingles')">Inglês (1-5)</button>
+        <button onclick="definirIdioma('espanhol')">Espanhol (1-5)</button>
+    `;
+}
+
+function definirIdioma(idioma) {
+    let dados = gabaritos[provaSelecionada];
+    gabaritoFinal = [...dados[idioma], ...dados.resto];
+    
+    iniciarResposta();
+}
+
+function iniciarResposta() {
+    document.getElementById("tela").innerHTML = `
+        <h2>Questão <span id="qNum">1</span> de ${gabaritoFinal.length}</h2>
+        <p>Digite ou clique A, B, C, D, ou E</p>
+
+        <div class="alternativas">
+            <button class="alternativaBtn" onclick="responder('A')">A</button>
+            <button class="alternativaBtn" onclick="responder('B')">B</button>
+            <button class="alternativaBtn" onclick="responder('C')">C</button>
+            <button class="alternativaBtn" onclick="responder('D')">D</button>
+            <button class="alternativaBtn" onclick="responder('E')">E</button>
+        </div>
+
+        <button id="voltar" onclick="voltarQuestao()">Voltar</button>
+    `;
+}
+
+document.addEventListener("keydown", e => {
+    let letra = e.key.toUpperCase();
+    if (["A","B","C","D","E"].includes(letra)) responder(letra);
+});
+
+function responder(letra) {
+    respostasUsuario.push(letra);
+    
+    let correta = gabaritoFinal[respostasUsuario.length - 1];
+
+    if (letra === correta) {
+        document.body.classList.add("flash-acerto");
+        document.getElementById("somAcerto").play();
+        setTimeout(() => document.body.classList.remove("flash-acerto"), 600);
+    } else {
+        document.body.classList.add("flash-erro");
+        document.getElementById("somErro").play();
+        setTimeout(() => document.body.classList.remove("flash-erro"), 600);
+    }
+
+    if (respostasUsuario.length === gabaritoFinal.length) {
+        finalizar();
+    } else {
+        questao++;
+        document.getElementById("qNum").innerText = questao;
+    }
+}
+
+function voltarQuestao() {
+    if (respostasUsuario.length > 0) {
+        respostasUsuario.pop();
+        questao--;
+        document.getElementById("qNum").innerText = questao;
+    }
+}
+
+function finalizar() {
+    let acertos = 0;
+    respostasUsuario.forEach((r, i) => {
+        if (r === gabaritoFinal[i]) acertos++;
+    });
+
+    document.getElementById("tela").innerHTML = `
+        <h2>Resultado final</h2>
+        <p>Você acertou <strong>${acertos}</strong> de <strong>${gabaritoFinal.length}</strong></p>
+        <button onclick="location.reload()">Recomeçar</button>
+    `;
+}
+</script>
+
+</body>
+</html>
