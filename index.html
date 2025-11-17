@@ -60,29 +60,25 @@
                                 Sistema de Correção de Provas ENEM
                             </h2>
                             <div class="row g-3 justify-content-center mb-4">
-                                <div class="col-md-5">
+                                <div class="col-md-8">
                                     <button class="btn btn-sucesso btn-custom w-100 py-4" onclick="selecionarAno(2025)">
                                         <div class="mb-2">
                                             <i class="bi bi-calendar-check-fill fs-1"></i>
                                         </div>
                                         <h4 class="mb-1">ENEM 2025</h4>
-                                        <small>Gabaritos Oficiais Disponíveis</small>
+                                        <small>Gabaritos Disponíveis</small>
                                     </button>
                                 </div>
-                                <div class="col-md-5">
-                                    <button class="btn btn-custom w-100 py-4" onclick="selecionarAno('anteriores')" 
+                            </div>
+                            <div class="row g-3 justify-content-center mb-4">
+                                <div class="col-md-6">
+                                    <button class="btn btn-custom w-100 py-2" onclick="selecionarAno('anteriores')" 
                                             style="background: #555 !important; border-color: #555 !important; opacity: 0.7;">
-                                        <div class="mb-2">
-                                            <i class="bi bi-archive-fill fs-1"></i>
-                                        </div>
-                                        <h4 class="mb-1">Edições Anteriores</h4>
-                                        <small>2024, 2023, 2022...</small>
-                                        <div class="mt-2">
-                                            <small style="color: #ff4444 !important; font-weight: bold;">
-                                                <i class="bi bi-hourglass-split me-1"></i>
-                                                Em Breve
-                                            </small>
-                                        </div>
+                                        <i class="bi bi-archive-fill me-2"></i>
+                                        <span>Edições Anteriores</span>
+                                        <small class="d-block mt-1" style="color: #ff4444 !important; font-weight: bold;">
+                                            <i class="bi bi-hourglass-split me-1"></i>Em Breve
+                                        </small>
                                     </button>
                                 </div>
                             </div>
@@ -96,6 +92,18 @@
                                 <div class="col-md-5">
                                     <button class="btn btn-sucesso btn-custom w-100 py-3" onclick="abrirProvasSalvas()">
                                         <i class="bi bi-folder-fill me-2"></i>Provas Salvas
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mt-3">
+                                <div class="col-md-5">
+                                    <button id="btnResultadoDia1" class="btn btn-info btn-custom w-100 py-3" onclick="abrirResultadoSalvo(1)" style="display: none;">
+                                        <i class="bi bi-clipboard-data-fill me-2"></i>Resultado Dia 1
+                                    </button>
+                                </div>
+                                <div class="col-md-5">
+                                    <button id="btnResultadoDia2" class="btn btn-info btn-custom w-100 py-3" onclick="abrirResultadoSalvo(2)" style="display: none;">
+                                        <i class="bi bi-clipboard-data-fill me-2"></i>Resultado Dia 2
                                     </button>
                                 </div>
                             </div>
@@ -118,19 +126,12 @@
                                     </button>
                                 </div>
                                 <div class="col-md-5">
-                                    <button class="btn btn-custom w-100 py-4" onclick="selecionarDia(2)" 
-                                            style="background: #555 !important; border-color: #555 !important; opacity: 0.7;">
+                                    <button class="btn btn-sucesso btn-custom w-100 py-4" onclick="selecionarDia(2)">
                                         <div class="mb-2">
                                             <i class="bi bi-2-circle-fill fs-1"></i>
                                         </div>
                                         <h5 class="mb-1">Segundo Dia</h5>
                                         <small>Matemática e Ciências da Natureza</small>
-                                        <div class="mt-2">
-                                            <small style="color: #ff4444 !important; font-weight: bold;">
-                                                <i class="bi bi-lock-fill me-1"></i>
-                                                Disponível em 16/11
-                                            </small>
-                                        </div>
                                     </button>
                                 </div>
                             </div>
@@ -147,10 +148,6 @@
                                 <i class="bi bi-palette2 me-2"></i>
                                 Escolha a cor da prova
                             </h2>
-                            <div id="mensagemSegundoDia" class="alert alert-danger mb-4 d-none">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                <strong>Segundo Dia - Disponível somente em 16/11</strong>
-                            </div>
                             <div class="row g-3 mb-4">
                                 <div class="col-6 col-md-3">
                                     <button id="btnVerde" class="btn btn-verde btn-custom w-100 py-3" onclick="selecionaProva('verde')">
@@ -251,14 +248,54 @@
                                 Acertos: <span id="numAcertos" class="text-success fw-bold">0</span> 
                                 de <span id="totalFinal" class="fw-bold" style="color: white !important;">90</span>
                             </p>
+                            
+                            <!-- CONTADORES POR ÁREA -->
+                            <div id="contadoresPorArea" class="mb-4" style="display: none;">
+                                <div class="row g-3 mb-3 justify-content-center">
+                                    <div class="col-md-4" id="cardLinguaEstrangeira">
+                                        <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+                                            <div class="card-body text-center">
+                                                <i class="bi bi-translate text-info fs-4 mb-2"></i>
+                                                <h6 style="color: white;">Língua Estrangeira</h6>
+                                                <span id="acertosLinguaEstrangeira" class="text-success fw-bold fs-5">0</span>
+                                                <span style="color: #ccc;"> de 5</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+                                            <div class="card-body text-center">
+                                                <i id="iconArea1" class="bi bi-book-fill text-primary fs-4 mb-2"></i>
+                                                <h6 style="color: white;" id="labelArea1">Linguagens</h6>
+                                                <span id="acertosLinguagens" class="text-success fw-bold fs-5">0</span>
+                                                <span style="color: #ccc;"> de <span id="totalArea1">40</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card" style="background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+                                            <div class="card-body text-center">
+                                                <i id="iconArea2" class="bi bi-people-fill text-warning fs-4 mb-2"></i>
+                                                <h6 style="color: white;" id="labelArea2">Humanas</h6>
+                                                <span id="acertosHumanas" class="text-success fw-bold fs-5">0</span>
+                                                <span style="color: #ccc;"> de <span id="totalArea2">45</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="table-responsive mb-4" style="max-height: 50vh;">
                                 <table id="tabela" class="table table-sm"></table>
                             </div>
-                            <div class="d-flex gap-3 justify-content-center">
+                            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                                <button onclick="salvarResultadoPDF()" class="btn btn-info btn-custom px-4">
+                                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>Salvar PDF
+                                </button>
                                 <button onclick="voltarInicio()" class="btn btn-inicio btn-custom px-4">
                                     <i class="bi bi-house-fill me-2"></i>Início
                                 </button>
-                                <button onclick="location.reload()" class="btn btn-sucesso btn-custom px-4">
+                                <button onclick="recomecarMesmaProva()" class="btn btn-sucesso btn-custom px-4">
                                     <i class="bi bi-arrow-clockwise me-2"></i>Recomeçar
                                 </button>
                             </div>
@@ -405,6 +442,8 @@
     <audio id="somAcerto" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
     <audio id="somErro" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
 
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 
     <!-- Bootstrap JS -->
