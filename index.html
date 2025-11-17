@@ -236,6 +236,11 @@
                                     <i class="bi bi-arrow-left me-2"></i>Voltar Questão
                                 </button>
                             </div>
+                            <div class="text-center mt-3">
+                                <button class="btn btn-sm" style="background: transparent; color: #888; border: 1px solid #555; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="abrirInsercaoRespostas()" title="Inserir respostas como texto">
+                                    <i class="bi bi-file-text-fill me-1"></i>Inserir Respostas
+                                </button>
+                            </div>
                         </div>
 
                         <!-- TELA 6: RESULTADO -->
@@ -446,6 +451,31 @@
     <!-- SONS -->
     <audio id="somAcerto" src="https://www.soundjay.com/buttons/sounds/button-3.mp3"></audio>
     <audio id="somErro" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+    <!-- MODAL INSERIR RESPOSTAS -->
+    <div id="modalInsercaoRespostas" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 15px; padding: 30px; max-width: 500px; width: 90%; color: white;">
+            <h4 class="mb-3">
+                <i class="bi bi-file-text-fill me-2"></i>Inserir Respostas em Lote
+            </h4>
+            <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">
+                Digite as respostas como uma sequência contínua (ex: ABCDEABCDEA...)<br>
+                Espaços e quebras de linha serão ignorados. Use apenas A, B, C, D, E.
+            </p>
+            <textarea id="textoRespostas" style="width: 100%; height: 120px; background: var(--bg-tertiary); color: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; font-family: monospace; resize: vertical;" placeholder="ABCDEABCDEA..."></textarea>
+            <p style="color: #999; font-size: 0.85rem; margin-top: 10px;">
+                <strong>Atenção:</strong> Isso sobrescreverá todas as suas respostas atuais.
+            </p>
+            <div class="d-flex gap-2 justify-content-center mt-4">
+                <button class="btn btn-voltar" style="background: var(--danger); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer;" onclick="fecharInsercaoRespostas()">
+                    Cancelar
+                </button>
+                <button class="btn btn-sucesso" style="background: var(--success); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; cursor: pointer;" onclick="inserirRespostasEmLote()">
+                    Inserir Respostas
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

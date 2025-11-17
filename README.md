@@ -72,8 +72,9 @@ Um sistema interativo e moderno para correção de provas do ENEM 2025, desenvol
 4. Escolha a **cor da sua prova** (Verde, Branca, Azul ou Amarela)
 5. **Apenas no 1º dia**: Selecione o **idioma** (Inglês ou Espanhol)
 6. Responda as **90 questões** clicando nos botões ou usando o teclado
-7. Veja seu **resultado final** com estatísticas por área
-8. **Exporte em PDF** clicando em "Salvar PDF"
+7. **Opcionalmente**, use o botão **"Inserir Respostas"** para colar um bloco de respostas (ex: "ABCDEABCDEA...")
+8. Veja seu **resultado final** com estatísticas por área
+9. **Exporte em PDF** clicando em "Salvar PDF"
 
 > **✅ Disponível**: Ambos os dias do ENEM 2025 com gabaritos completos!
 

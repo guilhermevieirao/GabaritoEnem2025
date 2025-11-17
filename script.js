@@ -1398,3 +1398,73 @@ function abrirResultadoSalvo(dia) {
 
   mostrarTela("telaResultado");
 }
+
+// FUNÇÕES PARA INSERIR RESPOSTAS EM LOTE
+function abrirInsercaoRespostas() {
+  document.getElementById("modalInsercaoRespostas").style.display = "flex";
+  document.getElementById("textoRespostas").value = "";
+  document.getElementById("textoRespostas").focus();
+}
+
+function fecharInsercaoRespostas() {
+  document.getElementById("modalInsercaoRespostas").style.display = "none";
+}
+
+function inserirRespostasEmLote() {
+  const textoRespostas = document.getElementById("textoRespostas").value.trim();
+  
+  if (!textoRespostas) {
+    alert("Por favor, digite as respostas.");
+    return;
+  }
+  
+  // Remove espaços, quebras de linha e converte para maiúsculo
+  const respostasLimpas = textoRespostas.replace(/[\s\n\r]/g, "").toUpperCase();
+  
+  // Valida se contém apenas A, B, C, D, E
+  const regex = /^[ABCDE]+$/;
+  if (!regex.test(respostasLimpas)) {
+    alert("O texto deve conter apenas as letras A, B, C, D ou E.");
+    return;
+  }
+  
+  // Verifica se a quantidade de respostas está correta
+  const respostasArray = respostasLimpas.split("");
+  const questoesFaltando = gabaritoFinal.length - respostasUsuario.length;
+  
+  if (respostasArray.length > questoesFaltando) {
+    alert(`Você tem ${questoesFaltando} questão(ões) restante(s), mas inseriu ${respostasArray.length} respostas.`);
+    return;
+  }
+  
+  // Insere as respostas uma por uma
+  let contador = 0;
+  for (let resposta of respostasArray) {
+    if (respostasUsuario.length >= gabaritoFinal.length) {
+      break;
+    }
+    responder(resposta);
+    contador++;
+  }
+  
+  // Fecha o modal
+  fecharInsercaoRespostas();
+  
+  // Feedback visual
+  alert(`${contador} resposta(s) inserida(s) com sucesso!`);
+}
+
+// Listener para fechar o modal ao clicar fora
+document.addEventListener("click", function(event) {
+  const modal = document.getElementById("modalInsercaoRespostas");
+  if (event.target === modal) {
+    fecharInsercaoRespostas();
+  }
+});
+
+// Listener para fechar o modal com ESC
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape") {
+    fecharInsercaoRespostas();
+  }
+});
