@@ -275,7 +275,6 @@ function selecionarDia(dia) {
 
   // Ambos os dias agora funcionam normalmente
   mostrarTela("telaCor");
-  document.getElementById("mensagemSegundoDia").classList.add("d-none");
   habilitarBotoesCor(true);
   ocultarPainel();
 }
@@ -315,12 +314,12 @@ function selecionaProva(cor) {
   // Primeiro dia tem seleção de idioma, segundo dia vai direto para as questões
   if (diaSelecionado === 1) {
     mostrarTela("telaIdioma");
+    ocultarPainel();
   } else if (diaSelecionado === 2) {
     // Segundo dia: usa o array único de 90 questões
     gabaritoFinal = gabaritosDia2[cor];
     iniciarResposta();
   }
-  ocultarPainel();
 }
 
 function definirIdioma(idioma) {
@@ -336,8 +335,14 @@ function definirIdioma(idioma) {
 function iniciarResposta() {
   quizFinalizado = false;
   questao = 1;
-  document.getElementById("qNum").innerText = questao;
-  document.getElementById("totalQuestoes").innerText = gabaritoFinal.length;
+  
+  // Se for dia 2, começa numeração a partir de 91
+  const numeroInicial = diaSelecionado === 2 ? 91 : 1;
+  const totalQuestoes = gabaritoFinal.length;
+  const totalComDia2 = diaSelecionado === 2 ? 180 : 90;
+  
+  document.getElementById("qNum").innerText = numeroInicial;
+  document.getElementById("totalQuestoes").innerText = totalComDia2;
   mostrarTela("telaQuestoes");
   mostrarPainel();
 }
@@ -349,7 +354,8 @@ function responder(letra) {
   const correta = gabaritoFinal[respostasUsuario.length - 1];
   const acertou = letra === correta;
 
-  atualizarPainel(respostasUsuario.length, correta, letra);
+  const numeroQuestao = diaSelecionado === 2 ? respostasUsuario.length + 90 : respostasUsuario.length;
+  atualizarPainel(numeroQuestao, correta, letra);
 
   if (audioHabilitado)
     document.getElementById(acertou ? "somAcerto" : "somErro").play();
@@ -377,7 +383,9 @@ function responder(letra) {
   if (respostasUsuario.length === gabaritoFinal.length) {
     finalizar();
   } else {
-    document.getElementById("qNum").innerText = ++questao;
+    questao++;
+    const numeroExibido = diaSelecionado === 2 ? questao + 90 : questao;
+    document.getElementById("qNum").innerText = numeroExibido;
   }
 }
 
@@ -395,7 +403,9 @@ function voltarQuestao() {
   if (quizFinalizado || respostasUsuario.length === 0) return;
 
   respostasUsuario.pop();
-  document.getElementById("qNum").innerText = --questao;
+  questao--;
+  const numeroExibido = diaSelecionado === 2 ? questao + 90 : questao;
+  document.getElementById("qNum").innerText = numeroExibido;
   atualizarPainel("—", "-", "-");
 }
 
