@@ -44,9 +44,12 @@ Um sistema interativo e moderno para correção de provas do ENEM 2025, desenvol
 - **Gerenciamento Completo**: Criar, Editar, Excluir, Renomear
 
 ### 📊 **Sistema de Resultados**
-- **Pontuação Detalhada** com número de acertos e percentual
-- **Desempenho por Área** com cards informativos
-- **Tabela Visual** mostrando resultado de cada questão
+- **Pontuação Detalhada** com número de acertos e percentual total
+- **Desempenho por Área** com cards informativos e porcentagens
+- **Tabela Visual Otimizada** 
+  - No PC: Sem barras de rolagem horizontal (layout otimizado)
+  - No Mobile: Células menores com barras de rolagem (se necessário)
+- **Numeração Contínua** (Dia 1: 1-90, Dia 2: 91-180)
 - **Indicação de Erros** com resposta correta entre parênteses
 - **Cores Intuitivas**: Verde (acerto) e Vermelho (erro)
 - **Exportação em PDF** com relatório completo e profissional

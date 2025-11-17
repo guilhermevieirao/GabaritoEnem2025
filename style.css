@@ -297,12 +297,41 @@ input:checked + .switch-slider:before {
   font-weight: bold;
   min-width: 80px;
   padding: 8px !important;
+  font-size: 0.95rem;
 }
 .cell-success {
   background-color: var(--success) !important;
 }
 .cell-error {
   background-color: var(--danger) !important;
+}
+
+/* TABELA NO PC - SEM SCROLL HORIZONTAL */
+@media (min-width: 1024px) {
+  .table-responsive {
+    overflow-x: visible !important;
+    overflow-y: auto !important;
+  }
+  .table {
+    font-size: 0.85rem;
+  }
+  .resultado-cell {
+    min-width: 60px;
+    padding: 6px 4px !important;
+    font-size: 0.85rem;
+  }
+}
+
+/* TABELA NO MOBILE - CÉLULAS MENORES */
+@media (max-width: 768px) {
+  .resultado-cell {
+    min-width: 40px;
+    padding: 4px 2px !important;
+    font-size: 0.75rem;
+  }
+  .table {
+    font-size: 0.75rem;
+  }
 }
 
 /* ESTILOS PARA TELAS PERSONALIZADAS */

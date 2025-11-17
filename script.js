@@ -933,17 +933,25 @@ function finalizar() {
 
   ocultarPainel();
 
+  // Calcula percentual total
+  const percentualTotal = ((acertos / gabaritoFinal.length) * 100).toFixed(1);
+
   // Atualiza informações do resultado
   document.getElementById("numAcertos").innerText = acertos;
   document.getElementById("totalFinal").innerText = gabaritoFinal.length;
+  document.getElementById("percentualTotal").innerText = `${percentualTotal}%`;
 
   // Atualiza contadores por área
   if (gabaritoFinal.length === 90) {
     if (diaSelecionado === 1) {
       // Dia 1: Mostra Língua Estrangeira, Linguagens e Humanas
-      document.getElementById("acertosLinguagens").innerText = acertosArea1;
-      document.getElementById("acertosHumanas").innerText = acertosArea2;
-      document.getElementById("acertosLinguaEstrangeira").innerText = acertosLinguaEstrangeira;
+      const percentLinguaEst = ((acertosLinguaEstrangeira / 5) * 100).toFixed(1);
+      const percentLinguagens = ((acertosArea1 / 40) * 100).toFixed(1);
+      const percentHumanas = ((acertosArea2 / 45) * 100).toFixed(1);
+      
+      document.getElementById("acertosLinguagens").innerText = `${acertosArea1} (${percentLinguagens}%)`;
+      document.getElementById("acertosHumanas").innerText = `${acertosArea2} (${percentHumanas}%)`;
+      document.getElementById("acertosLinguaEstrangeira").innerText = `${acertosLinguaEstrangeira} (${percentLinguaEst}%)`;
       document.getElementById("labelArea1").innerText = "Linguagens";
       document.getElementById("labelArea2").innerText = "Humanas";
       document.getElementById("totalArea1").innerText = "40";
@@ -953,8 +961,11 @@ function finalizar() {
       document.getElementById("cardLinguaEstrangeira").style.display = "block";
     } else if (diaSelecionado === 2) {
       // Dia 2: Mostra Natureza e Matemática (esconde Língua Estrangeira)
-      document.getElementById("acertosLinguagens").innerText = acertosArea1;
-      document.getElementById("acertosHumanas").innerText = acertosArea2;
+      const percentNatureza = ((acertosArea1 / 45) * 100).toFixed(1);
+      const percentMatematica = ((acertosArea2 / 45) * 100).toFixed(1);
+      
+      document.getElementById("acertosLinguagens").innerText = `${acertosArea1} (${percentNatureza}%)`;
+      document.getElementById("acertosHumanas").innerText = `${acertosArea2} (${percentMatematica}%)`;
       document.getElementById("labelArea1").innerText = "Ciências da Natureza";
       document.getElementById("labelArea2").innerText = "Matemática";
       document.getElementById("totalArea1").innerText = "45";
@@ -1018,6 +1029,11 @@ function recomecarMesmaProva() {
 function gerarTabelaResultados() {
   const tabela = document.getElementById("tabela");
   tabela.innerHTML = "";
+  
+  // Determina o offset de numeração (91 para dia 2, 1 para dia 1)
+  const numeroOffset = diaSelecionado === 2 ? 91 : 1;
+  const acertos = respostasUsuario.filter((r, i) => r === gabaritoFinal[i]).length;
+  const percentualTotal = ((acertos / gabaritoFinal.length) * 100).toFixed(1);
 
   for (let i = 0; i < gabaritoFinal.length; i++) {
     if (i % 10 === 0) {
@@ -1027,13 +1043,14 @@ function gerarTabelaResultados() {
     const correta = gabaritoFinal[i];
     const marcada = respostasUsuario[i] || "-";
     const acertou = correta === marcada;
+    const numeroQuestao = numeroOffset + i;
 
     const celula = tabela.rows[tabela.rows.length - 1].insertCell();
     celula.className = `resultado-cell ${
       acertou ? "cell-success" : "cell-error"
     }`;
     celula.innerHTML = `
-                    <div><strong>${i + 1}</strong></div>
+                    <div><strong>${numeroQuestao}</strong></div>
                     <div>${marcada}</div>
                     ${
                       acertou
@@ -1335,13 +1352,21 @@ function abrirResultadoSalvo(dia) {
   // Atualiza informações do resultado
   document.getElementById("numAcertos").innerText = acertos;
   document.getElementById("totalFinal").innerText = gabaritoFinal.length;
+  
+  // Calcula e mostra percentual total
+  const percentualTotal = ((acertos / gabaritoFinal.length) * 100).toFixed(1);
+  document.getElementById("percentualTotal").innerText = `${percentualTotal}%`;
 
   // Atualiza contadores por área
   if (gabaritoFinal.length === 90) {
     if (diaSelecionado === 1) {
-      document.getElementById("acertosLinguagens").innerText = acertosArea1;
-      document.getElementById("acertosHumanas").innerText = acertosArea2;
-      document.getElementById("acertosLinguaEstrangeira").innerText = acertosLinguaEstrangeira;
+      const percentLinguaEst = ((acertosLinguaEstrangeira / 5) * 100).toFixed(1);
+      const percentLinguagens = ((acertosArea1 / 40) * 100).toFixed(1);
+      const percentHumanas = ((acertosArea2 / 45) * 100).toFixed(1);
+      
+      document.getElementById("acertosLinguagens").innerText = `${acertosArea1} (${percentLinguagens}%)`;
+      document.getElementById("acertosHumanas").innerText = `${acertosArea2} (${percentHumanas}%)`;
+      document.getElementById("acertosLinguaEstrangeira").innerText = `${acertosLinguaEstrangeira} (${percentLinguaEst}%)`;
       document.getElementById("labelArea1").innerText = "Linguagens";
       document.getElementById("labelArea2").innerText = "Humanas";
       document.getElementById("totalArea1").innerText = "40";
@@ -1350,8 +1375,11 @@ function abrirResultadoSalvo(dia) {
       document.getElementById("iconArea2").className = "bi bi-people-fill text-warning fs-4 mb-2";
       document.getElementById("cardLinguaEstrangeira").style.display = "block";
     } else if (diaSelecionado === 2) {
-      document.getElementById("acertosLinguagens").innerText = acertosArea1;
-      document.getElementById("acertosHumanas").innerText = acertosArea2;
+      const percentNatureza = ((acertosArea1 / 45) * 100).toFixed(1);
+      const percentMatematica = ((acertosArea2 / 45) * 100).toFixed(1);
+      
+      document.getElementById("acertosLinguagens").innerText = `${acertosArea1} (${percentNatureza}%)`;
+      document.getElementById("acertosHumanas").innerText = `${acertosArea2} (${percentMatematica}%)`;
       document.getElementById("labelArea1").innerText = "Ciências da Natureza";
       document.getElementById("labelArea2").innerText = "Matemática";
       document.getElementById("totalArea1").innerText = "45";
