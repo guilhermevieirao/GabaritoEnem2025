@@ -4,7 +4,6 @@
   --bg-secondary: #222;
   --bg-tertiary: #333;
   --border-color: #444;
-  --text-primary: #fff;
   --success: #00aa00;
   --danger: #cc0000;
   --info: #0066cc;
@@ -13,31 +12,23 @@
 /* LAYOUT BASE */
 body {
   background: var(--bg-primary) !important;
-  color: var(--text-primary) !important;
+  color: #fff !important;
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif !important;
   min-height: 100vh;
-  margin: 0;
   overflow-x: hidden;
 }
 
-/* TIPOGRAFIA */
+/* FORÇAR COR DO TEXTO */
 h1,
 h2,
 h3,
 h4,
 h5,
-h6 {
-  color: var(--text-primary) !important;
-}
-
+h6,
 p,
 span,
 div {
-  color: var(--text-primary) !important;
-}
-
-.text-muted {
-  color: #ccc !important;
+  color: #fff !important;
 }
 
 /* CONTAINER PRINCIPAL */
@@ -50,26 +41,21 @@ div {
   z-index: 10;
 }
 
-/* CARDS */
+/* CARDS PERSONALIZADOS */
 .custom-card {
   background: var(--bg-secondary) !important;
   border: 2px solid var(--border-color) !important;
   border-radius: 15px !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
-  color: var(--text-primary) !important;
   position: relative;
   z-index: 20;
-}
-
-.custom-card * {
-  color: var(--text-primary) !important;
 }
 
 .info-panel {
   background: var(--bg-tertiary) !important;
 }
 
-/* BOTÕES */
+/* BOTÕES BASE */
 .btn-custom {
   border-radius: 10px;
   font-weight: 600;
@@ -81,13 +67,12 @@ div {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   opacity: 0.9;
-  color: white !important;
 }
 .btn-custom:active {
   transform: scale(0.95);
 }
 
-/* BOTÕES DE COR */
+/* BOTÕES DE COR DO CADERNO */
 .btn-verde {
   background: #00aa00 !important;
 }
@@ -95,13 +80,27 @@ div {
   background: #00cc00 !important;
 }
 
-.btn-branca {
+.btn-branco {
   background: #ffffff !important;
   color: #000 !important;
 }
-.btn-branca:hover {
+.btn-branco:hover {
   background: #f0f0f0 !important;
   color: #000 !important;
+}
+.btn-branco span {
+  color: #000 !important;
+}
+
+.btn-branco.btn-cinza-mode {
+  background: #888888 !important;
+  color: #ffffff !important;
+}
+.btn-branco.btn-cinza-mode:hover {
+  background: #999999 !important;
+}
+.btn-branco.btn-cinza-mode span {
+  color: #ffffff !important;
 }
 
 .btn-azul {
@@ -111,11 +110,11 @@ div {
   background: #0080ff !important;
 }
 
-.btn-amarela {
+.btn-amarelo {
   background: #ffd700 !important;
   color: #000 !important;
 }
-.btn-amarela:hover {
+.btn-amarelo:hover {
   background: #ffed4e !important;
   color: #000 !important;
 }
@@ -123,53 +122,33 @@ div {
 /* BOTÕES DE IDIOMA */
 .btn-idioma {
   background: var(--bg-tertiary);
-  color: white !important;
   border: 1px solid var(--border-color);
 }
 .btn-idioma:hover {
   background: #555 !important;
-  color: white !important;
   border-color: #666;
 }
 
 /* OUTROS BOTÕES */
-.btn-alternativa {
-  background: var(--border-color);
-  color: white;
-  font-size: 1.5rem;
-  min-height: 60px;
-  font-weight: bold;
-}
-.btn-alternativa:hover {
-  background: #666 !important;
-  color: white !important;
-}
-
 .btn-voltar {
   background: var(--danger);
-  color: white;
 }
 .btn-voltar:hover {
   background: #ff0000 !important;
-  color: white !important;
 }
 
 .btn-inicio {
   background: var(--border-color);
-  color: white;
 }
 .btn-inicio:hover {
   background: #666 !important;
-  color: white !important;
 }
 
 .btn-sucesso {
   background: var(--success);
-  color: white;
 }
 .btn-sucesso:hover {
   background: #00cc00 !important;
-  color: white !important;
 }
 
 /* SWITCHES */
@@ -292,7 +271,6 @@ input:checked + .switch-slider:before {
 /* TABELA RESULTADOS */
 .resultado-cell {
   border: 1px solid var(--border-color) !important;
-  color: white !important;
   text-align: center;
   font-weight: bold;
   min-width: 80px;
@@ -304,6 +282,9 @@ input:checked + .switch-slider:before {
 }
 .cell-error {
   background-color: var(--danger) !important;
+}
+.cell-anulada {
+  background-color: #ff9800 !important;
 }
 
 /* TABELA NO PC - SEM SCROLL HORIZONTAL */
@@ -334,35 +315,23 @@ input:checked + .switch-slider:before {
   }
 }
 
-/* ESTILOS PARA TELAS PERSONALIZADAS */
+/* BOTÕES DE ALTERNATIVAS */
 .btn-alternativa {
   background: var(--bg-secondary) !important;
-  color: white !important;
   border: 2px solid var(--border-color) !important;
   padding: 1rem !important;
   font-size: 1.25rem !important;
   font-weight: bold !important;
-  transition: all 0.3s ease !important;
+  min-height: 60px;
 }
-
 .btn-alternativa:hover {
   background: var(--info) !important;
   border-color: var(--info) !important;
-  color: white !important;
   transform: translateY(-2px);
 }
-
 .btn-alternativa.selected {
   background: var(--success) !important;
   border-color: var(--success) !important;
-  color: white !important;
-}
-
-.form-control:focus {
-  background: var(--bg-tertiary) !important;
-  border-color: var(--info) !important;
-  box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25) !important;
-  color: white !important;
 }
 
 /* RESPONSIVIDADE */
@@ -379,26 +348,18 @@ input:checked + .switch-slider:before {
   .btn-alternativa {
     font-size: 1.2rem;
     min-height: 50px;
-    transition: all 0.15s ease;
   }
-  
   .btn-alternativa.selected {
-    background: var(--success) !important;
-    border-color: var(--success) !important;
     transform: scale(1.05);
   }
-  
-  /* Gap entre cards no mobile */
-  #painelContainer {
-    margin-top: 2rem;
+  .resultado-cell {
+    min-width: 40px;
+    padding: 4px 2px !important;
+    font-size: 0.75rem;
   }
-  
-  /* Painel lateral visível no mobile quando ativo */
-  #painelContainer:not(.d-none) {
-    display: block !important;
+  .table {
+    font-size: 0.75rem;
   }
-  
-  /* Easter Egg no mobile */
   .easter-egg-icon-fixed {
     width: 45px;
     height: 45px;
@@ -412,9 +373,7 @@ input:checked + .switch-slider:before {
 .hidden {
   display: none !important;
 }
-.d-none-layout {
-  display: none !important;
-}
+
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -428,129 +387,6 @@ input:checked + .switch-slider:before {
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-/* PROVAS SALVAS */
-.prova-salva-item {
-  transition: all 0.3s ease;
-}
-
-.prova-salva-item:hover {
-  background: var(--bg-secondary) !important;
-  border-color: var(--info) !important;
-  transform: translateY(-2px);
-}
-
-.prova-salva-item h6 {
-  margin: 0;
-  font-weight: 600;
-}
-
-.prova-salva-item small {
-  opacity: 0.8;
-}
-
-.btn-erro {
-  background: var(--danger) !important;
-  border-color: var(--danger) !important;
-  color: white !important;
-}
-
-.btn-erro:hover {
-  background: #aa0000 !important;
-  border-color: #aa0000 !important;
-}
-
-.btn-info {
-  background: var(--info) !important;
-  border-color: var(--info) !important;
-  color: white !important;
-}
-
-.btn-info:hover {
-  background: #0055aa !important;
-  border-color: #0055aa !important;
-}
-
-#listaProvasSalvas:empty::after {
-  content: "Nenhuma prova salva encontrada.";
-  display: block;
-  text-align: center;
-  padding: 2rem;
-  color: #ccc;
-  font-style: italic;
-}
-
-/* SELEÇÃO DE DIA */
-.btn-custom.fs-1 {
-  font-size: 3rem !important;
-}
-
-.btn-custom[disabled] {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  pointer-events: none;
-}
-
-.alert-danger {
-  background: rgba(255, 68, 68, 0.15) !important;
-  border: 1px solid #ff4444 !important;
-  border-radius: 8px;
-  color: #ff6666 !important;
-}
-
-.alert-danger strong {
-  color: #ff4444 !important;
-}
-
-/* PROVA PERSONALIZADA */
-.form-check-input {
-  background-color: var(--bg-tertiary) !important;
-  border-color: var(--border-color) !important;
-}
-
-.form-check-input:checked {
-  background-color: var(--success) !important;
-  border-color: var(--success) !important;
-}
-
-.form-check-input:focus {
-  border-color: var(--info) !important;
-  box-shadow: 0 0 0 0.25rem rgba(0, 102, 204, 0.25) !important;
-}
-
-.form-check-label {
-  user-select: none;
-  cursor: pointer;
-}
-
-textarea.form-control {
-  resize: vertical;
-  min-height: 100px;
-}
-
-textarea.form-control:focus,
-input.form-control:focus {
-  background-color: var(--bg-secondary) !important;
-  border-color: var(--info) !important;
-  box-shadow: 0 0 0 0.25rem rgba(0, 102, 204, 0.25) !important;
-  color: white !important;
-}
-
-.text-muted {
-  color: #999 !important;
-}
-
-/* PLACEHOLDER CLARO */
-textarea.form-control::placeholder,
-input.form-control::placeholder {
-  color: #ccc !important;
-  opacity: 1;
-}
-
-textarea.form-control:focus::placeholder,
-input.form-control:focus::placeholder {
-  color: #aaa !important;
 }
 
 /* EASTER EGG */
@@ -573,7 +409,6 @@ input.form-control:focus::placeholder {
   backdrop-filter: blur(10px);
   border: 2px solid var(--border-color);
 }
-
 .easter-egg-icon-fixed:hover {
   color: #999;
   background: rgba(34, 34, 34, 0.9);
@@ -593,11 +428,9 @@ input.form-control:focus::placeholder {
   transition: color 0.3s ease;
   z-index: 5;
 }
-
 .easter-egg-icon:hover {
   color: #999;
 }
-
 .easter-egg-icon i {
   position: absolute;
   bottom: 0;
@@ -620,7 +453,6 @@ input.form-control:focus::placeholder {
   visibility: hidden;
   transition: all 0.3s ease;
 }
-
 .easter-egg-overlay.show {
   opacity: 1;
   visibility: visible;
@@ -631,4 +463,95 @@ input.form-control:focus::placeholder {
   max-height: 80%;
   border-radius: 10px;
   box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+/* BOTÕES ESPECÍFICOS */
+.btn-disabled {
+  background: #555 !important;
+  border-color: #555 !important;
+  opacity: 0.7;
+}
+
+.btn-inserir-respostas {
+  background: transparent;
+  color: #888;
+  border: 1px solid #555;
+}
+
+/* QUESTÃO ANULADA */
+.alert-anulada {
+  background: rgba(255, 193, 7, 0.15);
+  border: 2px solid #ffc107;
+}
+
+.alert-anulada-titulo,
+.alert-anulada-numero {
+  color: #ffc107 !important;
+}
+
+.alert-anulada-texto {
+  color: #ffd95a !important;
+}
+
+/* TELA RESULTADO */
+.card-area {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+}
+
+.table-resultado {
+  max-height: 50vh;
+}
+
+/* MODAL INSERÇÃO */
+.modal-insercao {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-insercao-content {
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-insercao-textarea {
+  width: 100%;
+  height: 120px;
+  background: var(--bg-tertiary);
+  color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: monospace;
+  resize: vertical;
+}
+
+.btn-modal-cancelar {
+  background: var(--danger);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-modal-confirmar {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
 }
